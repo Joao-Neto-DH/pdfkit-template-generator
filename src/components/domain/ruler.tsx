@@ -153,17 +153,33 @@ function Stick(
 }
 
 export interface RulerMousePositionProps {
-  mousePosition: { x: number; y: number };
+  // mousePosition: { x: number; y: number };
   vertical?: boolean;
 }
 
 export function RulerMousePosition(props: RulerMousePositionProps) {
+  const [mousePosition, setMousePosition] = React.useState({
+    x: 0,
+    y: 0,
+  });
+  React.useEffect(() => {
+    const handleMouseMove = (evt: MouseEvent) => {
+      setMousePosition((prev) => ({ ...prev, x: evt.pageX, y: evt.pageY }));
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
+
   if (props.vertical) {
     return (
       <span
         className="fixed left-0 w-5.5 border-dashed border-t-gray-800 border-t"
         style={{
-          top: `${props.mousePosition.y < 22 ? 22 : props.mousePosition.y}px`,
+          top: `${mousePosition.y < 22 ? 22 : mousePosition.y}px`,
         }}
       ></span>
     );
@@ -173,7 +189,7 @@ export function RulerMousePosition(props: RulerMousePositionProps) {
     <span
       className="absolute top-0 h-5.5 border-dashed border-r-gray-800 border-r"
       style={{
-        left: `${props.mousePosition.x < 22 ? 22 : props.mousePosition.x}px`,
+        left: `${mousePosition.x < 22 ? 22 : mousePosition.x}px`,
       }}
     ></span>
   );

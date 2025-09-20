@@ -49,17 +49,6 @@ function DraggableContent({ children }: { children?: React.ReactNode }) {
         });
         setIsPressedButton(true);
       }}
-      // onMouseMove={(evt) => {
-      //   if (isPressedButton) {
-      //     const rect = evt.currentTarget.getBoundingClientRect();
-      //     const relativeX = Math.abs(rect.x - clickedAt.x);
-      //     const relativeY = Math.abs(rect.y - clickedAt.y);
-      //     setPositions({
-      //       x: evt.pageX - relativeX,
-      //       y: evt.pageY - relativeY,
-      //     });
-      //   }
-      // }}
     >
       {children}
     </div>

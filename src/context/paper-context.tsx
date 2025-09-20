@@ -32,6 +32,48 @@ export function PaperProvider({ children }: { children: React.ReactNode }) {
     y: 0,
   });
 
+  React.useEffect(() => {
+    const canvas = document.getElementById("canvas")!;
+
+    const handleCanvasScroll = () => {
+      setViewPointScrollValue((prev) => ({
+        ...prev,
+        y: canvas.scrollTop,
+        x: canvas.scrollLeft,
+      }));
+    };
+
+    canvas.addEventListener("scroll", handleCanvasScroll);
+    return () => {
+      canvas.removeEventListener("scroll", handleCanvasScroll);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    function canvasMouseMove(evt: MouseEvent) {
+      if (
+        "currentTarget" in evt &&
+        evt.currentTarget &&
+        evt.currentTarget instanceof HTMLDivElement
+      ) {
+        const rect = evt.currentTarget.getBoundingClientRect();
+        const relativeX = Math.abs(rect.x - evt.clientX);
+        const relativeY = Math.abs(rect.y - evt.clientY);
+        setMousePositionInCanvas(() => ({
+          x: relativeX,
+          y: relativeY,
+        }));
+      }
+    }
+
+    const paper = document.getElementById("paper")! as HTMLDivElement;
+    paper.addEventListener("mousemove", canvasMouseMove);
+
+    return () => {
+      paper.removeEventListener("mousemove", canvasMouseMove);
+    };
+  }, []);
+
   return (
     <PaperContext.Provider
       value={{
