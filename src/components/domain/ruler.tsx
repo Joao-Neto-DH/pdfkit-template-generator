@@ -9,8 +9,6 @@ export interface RuleProps {
   children?: React.ReactNode;
 }
 
-const STICKS_BETWEEN_NUMBERS = 5;
-
 export function Ruler(props: RuleProps) {
   const { viewPointScrollValue } = usePaper();
 
@@ -33,14 +31,35 @@ export function Ruler(props: RuleProps) {
                   }}
                   className="relative flex flex-row items-center justify-center gap-0.5 h-0"
                 >
-                  <span className="w-1 border-t-red-800 border-t"></span>
+                  <Stick
+                    vertical
+                    base_distance_between_units={
+                      -props.base_distance_between_units / 2
+                    }
+                  />
+                  <Stick
+                    vertical
+                    base_distance_between_units={
+                      -props.base_distance_between_units / 4
+                    }
+                  />
+                  <span className="w-1 border-t-gray-600 border-t"></span>
+
+                  <Stick
+                    vertical
+                    base_distance_between_units={
+                      props.base_distance_between_units / 2
+                    }
+                  />
+                  <Stick
+                    vertical
+                    base_distance_between_units={
+                      props.base_distance_between_units / 4
+                    }
+                  />
                   <span className="text-[8px]">{idx + 1}</span>
                 </li>
               ))}
-              {/* <li
-              className="absolute bg-inherit top-0 left-0 z-10 w-full"
-              style={{ height: `${props.base_distance_between_units}pt` }}
-            ></li> */}
             </ul>
           </div>
         </div>
@@ -52,29 +71,84 @@ export function Ruler(props: RuleProps) {
   return (
     <div className="relative">
       <div className="min-h-5.5 h-5.5 bg-white relative">
-        <ul className="flex bg-inherit flex-row text-black py-0.5 overflow-x-hidden relative">
+        <ul
+          className="flex bg-inherit flex-row text-black py-0.5 overflow-x-hidden relative"
+          style={{ transform: `translateX(-${viewPointScrollValue.x}px)` }}
+        >
           <li>
             <span className="inline-block w-5.5"></span>
           </li>
           {Array.from({
             length: props.rule_size * 2,
           }).map((_, idx) => (
-            <React.Fragment key={idx}>
-              <li
+            <li
+              key={idx}
+              style={{
+                marginLeft: `${props.base_distance_between_units}pt`,
+              }}
+              className="relative flex flex-col items-center justify-center gap-0.5 w-0"
+            >
+              <Stick
+                base_distance_between_units={
+                  -props.base_distance_between_units / 2
+                }
+              />
+              <Stick
+                base_distance_between_units={
+                  -props.base_distance_between_units / 4
+                }
+              />
+              <span
+                className="absolute top-0.5 h-1 border-r-gray-400 border-r"
                 style={{
-                  marginLeft: `${props.base_distance_between_units}pt`,
+                  transform: `translateX(-${
+                    props.base_distance_between_units / 2
+                  }pt)`,
                 }}
-                className="relative flex flex-col items-center justify-center gap-0.5 w-0"
-              >
-                <span className="h-1 border-r-red-800 border-r"></span>
-                <span className="text-[8px]">{idx + 1}</span>
-              </li>
-            </React.Fragment>
+              ></span>
+              <Stick
+                base_distance_between_units={
+                  props.base_distance_between_units / 2
+                }
+              />
+              <Stick
+                base_distance_between_units={
+                  props.base_distance_between_units / 4
+                }
+              />
+
+              <span className="h-1 border-r-gray-600 border-r"></span>
+              <span className="text-[8px]">{idx + 1}</span>
+            </li>
           ))}
         </ul>
       </div>
       {props.children}
     </div>
+  );
+}
+
+function Stick(
+  props: Pick<RuleProps, "base_distance_between_units" | "vertical">
+) {
+  if (props.vertical) {
+    return (
+      <span
+        className="absolute left-0.5 w-1 border-t-gray-400 border-t"
+        style={{
+          transform: `translateY(${props.base_distance_between_units}pt)`,
+        }}
+      ></span>
+    );
+  }
+
+  return (
+    <span
+      className="absolute top-0.5 h-1 border-r-gray-400 border-r"
+      style={{
+        transform: `translateX(${props.base_distance_between_units}pt)`,
+      }}
+    ></span>
   );
 }
 

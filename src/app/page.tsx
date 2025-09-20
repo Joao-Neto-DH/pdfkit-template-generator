@@ -21,7 +21,11 @@ export default function Home() {
     const canvas = document.getElementById("canvas")!;
 
     const handleCanvasScroll = () => {
-      setViewPointScrollValue((prev) => ({ ...prev, y: canvas.scrollTop }));
+      setViewPointScrollValue((prev) => ({
+        ...prev,
+        y: canvas.scrollTop,
+        x: canvas.scrollLeft,
+      }));
     };
 
     canvas.addEventListener("scroll", handleCanvasScroll);
