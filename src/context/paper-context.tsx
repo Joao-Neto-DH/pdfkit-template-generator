@@ -2,10 +2,10 @@
 import React from "react";
 
 interface IPaper {
-  mousePositionInCanvas: { x: number; y: number };
-  setMousePositionInCanvas: React.Dispatch<
-    React.SetStateAction<{ x: number; y: number }>
-  >;
+  // mousePositionInCanvas: { x: number; y: number };
+  // setMousePositionInCanvas: React.Dispatch<
+  //   React.SetStateAction<{ x: number; y: number }>
+  // >;
   viewPointScrollValue: { x: number; y: number };
   setViewPointScrollValue: React.Dispatch<
     React.SetStateAction<{ x: number; y: number }>
@@ -23,10 +23,10 @@ export function usePaper() {
 }
 
 export function PaperProvider({ children }: { children: React.ReactNode }) {
-  const [mousePositionInCanvas, setMousePositionInCanvas] = React.useState({
-    x: 0,
-    y: 0,
-  });
+  // const [mousePositionInCanvas, setMousePositionInCanvas] = React.useState({
+  //   x: 0,
+  //   y: 0,
+  // });
   const [viewPointScrollValue, setViewPointScrollValue] = React.useState({
     x: 0,
     y: 0,
@@ -49,36 +49,36 @@ export function PaperProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  React.useEffect(() => {
-    function canvasMouseMove(evt: MouseEvent) {
-      if (
-        "currentTarget" in evt &&
-        evt.currentTarget &&
-        evt.currentTarget instanceof HTMLDivElement
-      ) {
-        const rect = evt.currentTarget.getBoundingClientRect();
-        const relativeX = Math.abs(rect.x - evt.clientX);
-        const relativeY = Math.abs(rect.y - evt.clientY);
-        setMousePositionInCanvas(() => ({
-          x: relativeX,
-          y: relativeY,
-        }));
-      }
-    }
+  // React.useEffect(() => {
+  //   function canvasMouseMove(evt: MouseEvent) {
+  //     if (
+  //       "currentTarget" in evt &&
+  //       evt.currentTarget &&
+  //       evt.currentTarget instanceof HTMLDivElement
+  //     ) {
+  //       const rect = evt.currentTarget.getBoundingClientRect();
+  //       const relativeX = Math.abs(rect.x - evt.clientX);
+  //       const relativeY = Math.abs(rect.y - evt.clientY);
+  //       setMousePositionInCanvas(() => ({
+  //         x: relativeX,
+  //         y: relativeY,
+  //       }));
+  //     }
+  //   }
 
-    const paper = document.getElementById("paper")! as HTMLDivElement;
-    paper.addEventListener("mousemove", canvasMouseMove);
+  //   const paper = document.getElementById("paper")! as HTMLDivElement;
+  //   paper.addEventListener("mousemove", canvasMouseMove);
 
-    return () => {
-      paper.removeEventListener("mousemove", canvasMouseMove);
-    };
-  }, []);
+  //   return () => {
+  //     paper.removeEventListener("mousemove", canvasMouseMove);
+  //   };
+  // }, []);
 
   return (
     <PaperContext.Provider
       value={{
-        mousePositionInCanvas,
-        setMousePositionInCanvas,
+        // mousePositionInCanvas,
+        // setMousePositionInCanvas,
         setViewPointScrollValue,
         viewPointScrollValue,
       }}

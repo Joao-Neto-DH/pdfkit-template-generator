@@ -62,7 +62,7 @@ export default function Home() {
               className="w-[791.72px] h-[1119.71px] mx-auto relative overflow-hidden"
             >
               <DraggableContent>
-                <div className="size-20 bg-red-600"></div>
+                <div className="bg-red-600 w-full h-full"></div>
               </DraggableContent>
               {/* <DraggableContent>
                 <div className="size-20 bg-blue-600"></div>
