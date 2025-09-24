@@ -5,9 +5,15 @@ import React from "react";
 
 interface DraggableContentProps {
   children?: React.ReactNode;
+  className?: string;
+  offset?: number;
 }
 
-function DraggableContent({ children }: DraggableContentProps) {
+function DraggableContent({
+  children,
+  className,
+  offset = 0,
+}: DraggableContentProps) {
   const parentMousePosition = useMouseMovementOnPaper();
   const { isResizing, setIsPressed, isPressed, states, setStates, element } =
     useItem();
@@ -42,9 +48,11 @@ function DraggableContent({ children }: DraggableContentProps) {
 
   return (
     <div
-      className="absolute top-0 left-0"
+      className={`absolute top-0 left-0 ${className}`.trim()}
       style={{
-        transform: `translate(${states.position.x}px, ${states.position.y}px)`,
+        transform: `translate(${states.position.x}px, ${
+          states.position.y - offset
+        }px)`,
         width: states.size.width,
         height: states.size.height,
       }}

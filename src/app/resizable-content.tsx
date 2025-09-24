@@ -2,6 +2,7 @@
 import { useElement, useItem } from "@/context";
 import { useMouseMovementOnPaper } from "@/hooks/use-mouse-movement-on-paper";
 import React from "react";
+import DraggableContent from "./draggable-content";
 
 interface ResizableContentProps {
   children?: React.ReactNode;
@@ -81,23 +82,8 @@ function ResizableContent({ children }: ResizableContentProps) {
   }
 
   return (
-    <div
-      className="absolute top-0 left-0 z-10"
-      style={{
-        transform: `translate(${states.position.x}px, ${
-          states.position.y - 1
-        }px)`,
-        width: states.size.width,
-        height: states.size.height,
-      }}
-    >
-      <div
-        className="border-1 border-blue-300 relative"
-        // style={{
-        //   width: `${states.size.width}px`,
-        //   height: `${states.size.height}px`,
-        // }}
-      >
+    <DraggableContent className="z-10" offset={1}>
+      <div className="border-1 border-blue-300 relative">
         <div
           className="size-2 bg-gray-400 absolute top-0 left-0 -translate-1/2 cursor-nwse-resize"
           onMouseEnter={() => {
@@ -133,7 +119,7 @@ function ResizableContent({ children }: ResizableContentProps) {
           {children}
         </div>
       </div>
-    </div>
+    </DraggableContent>
   );
 }
 
