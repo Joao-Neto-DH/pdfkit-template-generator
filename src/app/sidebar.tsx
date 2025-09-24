@@ -1,0 +1,87 @@
+"use client";
+
+import { useElement, useInspector } from "@/context";
+
+export function Sidebar() {
+  const { addElement, elements, removeElement } = useElement();
+  const { inspectedElement, onInspectedElementChange, setInspectedElement } =
+    useInspector();
+
+  return (
+    <div className="w-96 h-full bg-white overflow-y-auto">
+      <div className="p-4 space-y-3">
+        <div className="">
+          <p className="font-bold text-slate-600 uppercas">Elementos</p>
+          <div className="">
+            <button
+              onClick={() => {
+                addElement({
+                  height: 80,
+                  width: 80,
+                  x: 0,
+                  y: 0,
+                  id: Math.round(
+                    Math.random() * 1000 + elements.length + 1 + Date.now()
+                  ),
+                  type: "square",
+                });
+              }}
+              className="bg-blue-400 hover:bg-blue-500 transition-colors p-2 rounded cursor-pointer"
+            >
+              Quadrado
+            </button>
+          </div>
+        </div>
+        <div className="">
+          <p className="font-bold text-slate-600 uppercas">Propriedades</p>
+          {inspectedElement && (
+            <div className="space-y-1">
+              <div className="grid grid-cols-2 items-center text-slate-600 border-b last:border-b-0">
+                <label htmlFor="id">ID</label>
+                <input type="text" value={inspectedElement.id} disabled />
+              </div>
+              <div className="grid grid-cols-2 items-center text-slate-600 border-b last:border-b-0">
+                <label htmlFor="type">Tipo</label>
+                <input type="text" value={inspectedElement.type} disabled />
+              </div>
+              <div className="grid grid-cols-2 items-center text-slate-600 border-b last:border-b-0">
+                <label htmlFor="x">X</label>
+                <input type="text" value={inspectedElement.x} disabled />
+              </div>
+              <div className="grid grid-cols-2 items-center text-slate-600 border-b last:border-b-0">
+                <label htmlFor="y">Y</label>
+                <input type="text" value={inspectedElement.y} disabled />
+              </div>
+              <div className="grid grid-cols-2 items-center text-slate-600 border-b last:border-b-0">
+                <label htmlFor="width">Largura</label>
+                <input
+                  type="number"
+                  value={inspectedElement.width}
+                  onChange={(evt) => {
+                    const width = Number(evt.target.value);
+                    onInspectedElementChange({ width });
+                  }}
+                />
+              </div>
+              <div className="grid grid-cols-2 items-center text-slate-600 border-b last:border-b-0">
+                <label htmlFor="width">Altura</label>
+                <input type="text" value={inspectedElement.height} disabled />
+              </div>
+              <div className="grid grid-cols-2 items-center text-slate-600 border-b last:border-b-0">
+                <button
+                  onClick={() => {
+                    removeElement(inspectedElement.id);
+                    setInspectedElement(null);
+                  }}
+                  className="bg-red-400 hover:bg-red-500 text-white transition-colors p-1 rounded cursor-pointer col-span-2 block"
+                >
+                  Remover
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -5,6 +5,7 @@ import { Ruler, RulerMousePosition } from "@/components/domain";
 import { useElement } from "@/context";
 import Item from "./item";
 import ResizableContent from "./resizable-content";
+import { Sidebar } from "./sidebar";
 
 const ONE_CENTIMETER_IN_POINT = 28.346;
 
@@ -13,7 +14,7 @@ export default function Home() {
     width: 0,
     height: 0,
   });
-  const { elements, addElement, setSelectedElement } = useElement();
+  const { elements, setSelectedElement } = useElement();
 
   React.useEffect(() => {
     const handleResize = () => {
@@ -70,7 +71,7 @@ export default function Home() {
             >
               {elements.map((element) => (
                 <Item element={element} key={element.id}>
-                  <ResizableContent></ResizableContent>
+                  <ResizableContent />
                   <DraggableContent>
                     <div className="bg-red-600 w-full h-full"></div>
                   </DraggableContent>
@@ -80,31 +81,7 @@ export default function Home() {
               <div className="bg-white w-full h-full mx-auto shadow-2xl"></div>
             </div>
           </div>
-          <div className="w-96 h-full bg-white overflow-y-auto">
-            <div className="p-4 space-y-3">
-              <div className="">
-                <p className="font-bold text-slate-600 uppercas">Elementos</p>
-                <div className="">
-                  <button
-                    onClick={() => {
-                      addElement({
-                        height: 80,
-                        width: 80,
-                        x: 0,
-                        y: 0,
-                        id: Date.now(),
-                        type: "square",
-                      });
-                    }}
-                    className="bg-blue-400 hover:bg-blue-500 transition-colors p-2 rounded cursor-pointer"
-                  >
-                    Quadrado
-                  </button>
-                </div>
-              </div>
-              <p className="font-bold text-slate-600 uppercas">Inpector</p>
-            </div>
-          </div>
+          <Sidebar />
         </div>
       </div>
     </div>

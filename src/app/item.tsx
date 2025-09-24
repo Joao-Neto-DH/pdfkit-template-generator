@@ -8,6 +8,9 @@ function Item({
   children: React.ReactNode;
   element: CanvasElement;
 }) {
+  // const { inspectedElement } = useInspector();
+  // console.log(element);
+
   return <ItemProvider element={element}>{children}</ItemProvider>;
 }
 

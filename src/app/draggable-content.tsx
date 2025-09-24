@@ -1,5 +1,5 @@
 "use client";
-import { useElement, useItem } from "@/context";
+import { useElement, useInspector, useItem } from "@/context";
 import { useMouseMovementOnPaper as useMouseMovementOnPaper } from "@/hooks/use-mouse-movement-on-paper";
 import React from "react";
 
@@ -17,7 +17,9 @@ function DraggableContent({
   const parentMousePosition = useMouseMovementOnPaper();
   const { isResizing, setIsPressed, isPressed, states, setStates, element } =
     useItem();
-  const { setSelectedElement } = useElement();
+  const { setSelectedElement, updateElement } = useElement();
+  const { setInspectedElement, inspectedElement, onInspectedElementChange } =
+    useInspector();
 
   function setClickedAt(clickedAt: { x: number; y: number }) {
     setStates((prev) => ({ ...prev, clickedAt }));
@@ -26,25 +28,56 @@ function DraggableContent({
   React.useEffect(() => {
     const handleMouseUp = () => {
       setIsPressed(false);
+      if (inspectedElement?.id === element.id) {
+        updateElement({
+          ...element,
+          x: states.position.x,
+          y: states.position.y,
+          width: states.size.width,
+          height: states.size.height,
+        });
+      }
     };
 
     window.addEventListener("mouseup", handleMouseUp);
     return () => {
       window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [setIsPressed]);
+  }, [setIsPressed, updateElement, element, states, inspectedElement]);
 
   React.useEffect(() => {
     if (isPressed && !isResizing) {
+      const x = parentMousePosition.x - states.clickedAt.x;
+      const y = parentMousePosition.y - states.clickedAt.y;
+
+      if (states.position.x === x && states.position.y === y) {
+        return;
+      }
+
       setStates((prev) => ({
         ...prev,
         position: {
-          x: parentMousePosition.x - states.clickedAt.x,
-          y: parentMousePosition.y - states.clickedAt.y,
+          x,
+          y,
         },
       }));
     }
-  }, [isPressed, isResizing, parentMousePosition, setStates, states.clickedAt]);
+  }, [
+    isPressed,
+    isResizing,
+    parentMousePosition,
+    setStates,
+    states.clickedAt,
+    states.position,
+  ]);
+
+  React.useEffect(() => {
+    onInspectedElementChange({
+      x: states.position.x,
+      y: states.position.y,
+      id: element.id,
+    });
+  }, [onInspectedElementChange, element.id, states.position]);
 
   return (
     <div
@@ -59,6 +92,7 @@ function DraggableContent({
       onClick={(evt) => {
         evt.stopPropagation();
         setSelectedElement(element);
+        setInspectedElement(element);
       }}
       onMouseDown={(evt) => {
         const rect = evt.currentTarget.getBoundingClientRect();

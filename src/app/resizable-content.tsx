@@ -1,5 +1,5 @@
 "use client";
-import { useElement, useItem } from "@/context";
+import { useElement, useInspector, useItem } from "@/context";
 import { useMouseMovementOnPaper } from "@/hooks/use-mouse-movement-on-paper";
 import React from "react";
 import DraggableContent from "./draggable-content";
@@ -15,6 +15,7 @@ function ResizableContent({ children }: ResizableContentProps) {
     useItem();
   const parentMousePosition = useMouseMovementOnPaper();
   const { selectedElement } = useElement();
+  const { onInspectedElementChange } = useInspector();
 
   React.useEffect(() => {
     function handleResize() {
@@ -33,14 +34,10 @@ function ResizableContent({ children }: ResizableContentProps) {
       }
     }
 
-    function handleMouseMovement() {
-      handleResize();
-    }
-
-    window.addEventListener("mousemove", handleMouseMovement);
+    window.addEventListener("mousemove", handleResize);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMovement);
+      window.removeEventListener("mousemove", handleResize);
     };
   }, [resize, parentMousePosition, states.position, isPressed, setStates]);
 
@@ -63,6 +60,14 @@ function ResizableContent({ children }: ResizableContentProps) {
       window.removeEventListener("mouseup", handleMouseUp);
     };
   }, [setIsPressed, setIsResizing]);
+
+  React.useEffect(() => {
+    onInspectedElementChange({
+      width: states.size.width,
+      height: states.size.height,
+      id: element.id,
+    });
+  }, [element.id, onInspectedElementChange, states.size]);
 
   function onResizeClickedIn(evt: React.MouseEvent<HTMLDivElement>) {
     const cursor = evt.currentTarget.classList
