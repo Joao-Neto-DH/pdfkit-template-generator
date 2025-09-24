@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { CanvasElement } from "./element-context";
 
 interface ItemContextProps {
   isPressed: boolean;
@@ -8,6 +9,7 @@ interface ItemContextProps {
   setIsResizing: React.Dispatch<React.SetStateAction<boolean>>;
   states: State;
   setStates: React.Dispatch<React.SetStateAction<State>>;
+  element: CanvasElement;
 }
 
 type State = {
@@ -29,15 +31,14 @@ export const ItemContext = React.createContext<ItemContextProps>(null!);
 
 export function ItemProvider(props: {
   children: React.ReactNode;
-  startPosition: { x: number; y: number };
-  startSize: { width: number; height: number };
+  element: CanvasElement;
 }) {
   const [isPressed, setIsPressed] = React.useState(false);
   const [isResizing, setIsResizing] = React.useState(false);
   const [states, setStates] = React.useState<State>({
-    clickedAt: props.startPosition,
-    size: props.startSize,
-    position: props.startPosition,
+    clickedAt: { x: props.element.x, y: props.element.y },
+    size: { width: props.element.width, height: props.element.height },
+    position: { x: props.element.x, y: props.element.y },
   });
 
   return (
@@ -49,6 +50,7 @@ export function ItemProvider(props: {
         setIsResizing,
         states,
         setStates,
+        element: props.element,
       }}
     >
       {props.children}

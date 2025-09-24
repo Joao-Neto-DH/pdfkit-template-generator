@@ -15,12 +15,19 @@ export interface ElementContextProps {
   addElement: (element: CanvasElement) => void;
   removeElement: (id: number) => void;
   updateElement: (element: CanvasElement) => void;
+  selectedElement: CanvasElement | null;
+  setSelectedElement: React.Dispatch<
+    React.SetStateAction<CanvasElement | null>
+  >;
 }
 
 export const ElementContext = React.createContext<ElementContextProps>(null!);
 
 export function ElementProvider(props: { children: React.ReactNode }) {
   const [elements, setElements] = React.useState<Array<CanvasElement>>([]);
+  const [selectedElement, setSelectedElement] =
+    React.useState<CanvasElement | null>(null);
+
   function addElement(element: CanvasElement) {
     setElements((prev) => [...prev, element]);
   }
@@ -30,11 +37,17 @@ export function ElementProvider(props: { children: React.ReactNode }) {
   function updateElement(element: CanvasElement) {
     setElements((prev) => prev.map((e) => (e.id === element.id ? element : e)));
   }
-  console.log(elements);
 
   return (
     <ElementContext.Provider
-      value={{ elements, addElement, removeElement, updateElement }}
+      value={{
+        elements,
+        addElement,
+        removeElement,
+        updateElement,
+        selectedElement,
+        setSelectedElement,
+      }}
     >
       {props.children}
     </ElementContext.Provider>

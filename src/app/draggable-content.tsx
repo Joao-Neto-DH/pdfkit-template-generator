@@ -1,5 +1,5 @@
 "use client";
-import { useItem } from "@/context";
+import { useElement, useItem } from "@/context";
 import { useMouseMovementOnPaper as useMouseMovementOnPaper } from "@/hooks/use-mouse-movement-on-paper";
 import React from "react";
 
@@ -9,7 +9,9 @@ interface DraggableContentProps {
 
 function DraggableContent({ children }: DraggableContentProps) {
   const parentMousePosition = useMouseMovementOnPaper();
-  const { isResizing, setIsPressed, isPressed, states, setStates } = useItem();
+  const { isResizing, setIsPressed, isPressed, states, setStates, element } =
+    useItem();
+  const { setSelectedElement } = useElement();
 
   function setClickedAt(clickedAt: { x: number; y: number }) {
     setStates((prev) => ({ ...prev, clickedAt }));
@@ -45,6 +47,10 @@ function DraggableContent({ children }: DraggableContentProps) {
         transform: `translate(${states.position.x}px, ${states.position.y}px)`,
         width: states.size.width,
         height: states.size.height,
+      }}
+      onClick={(evt) => {
+        evt.stopPropagation();
+        setSelectedElement(element);
       }}
       onMouseDown={(evt) => {
         const rect = evt.currentTarget.getBoundingClientRect();

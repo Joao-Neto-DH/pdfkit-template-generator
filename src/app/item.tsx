@@ -8,14 +8,7 @@ function Item({
   children: React.ReactNode;
   element: CanvasElement;
 }) {
-  return (
-    <ItemProvider
-      startPosition={{ x: element.x, y: element.y }}
-      startSize={{ width: element.width, height: element.height }}
-    >
-      {children}
-    </ItemProvider>
-  );
+  return <ItemProvider element={element}>{children}</ItemProvider>;
 }
 
 export default Item;

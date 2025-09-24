@@ -13,7 +13,7 @@ export default function Home() {
     width: 0,
     height: 0,
   });
-  const { elements, addElement } = useElement();
+  const { elements, addElement, setSelectedElement } = useElement();
 
   React.useEffect(() => {
     const handleResize = () => {
@@ -66,13 +66,13 @@ export default function Home() {
             <div
               id="paper"
               className="w-[791.72px] h-[1119.71px] mx-auto relative overflow-hidden"
+              onClick={() => setSelectedElement(null)}
             >
               {elements.map((element) => (
                 <Item element={element} key={element.id}>
+                  <ResizableContent></ResizableContent>
                   <DraggableContent>
-                    <ResizableContent>
-                      <div className="bg-red-600 w-full h-full"></div>
-                    </ResizableContent>
+                    <div className="bg-red-600 w-full h-full"></div>
                   </DraggableContent>
                 </Item>
               ))}
