@@ -11,13 +11,18 @@ export function Trigger({
   className?: string;
   children?: React.ReactNode;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
-  onBeforeClose?: () => void;
+  onBeforeClose?: () => false | void;
 }) {
   const { setOpen, open } = useDialog();
   return (
     <button
       onClick={(evt) => {
-        onBeforeClose?.();
+        const result = onBeforeClose?.();
+
+        if (result === false) {
+          return;
+        }
+
         setOpen(!open);
         onClick?.(evt);
       }}

@@ -78,6 +78,7 @@ export default function Home() {
                   <DraggableContent>
                     {element.type === "text" && (
                       <pre
+                        draggable={false}
                         className="w-full h-full overflow-visible whitespace-break-spaces select-none"
                         style={{
                           fontSize: `${element.option.fontSize}px`,
@@ -100,11 +101,21 @@ export default function Home() {
                     )}
                     {element.type === "square" && (
                       <div
-                        className="w-full h-full"
+                        className="w-full h-full select-none"
                         style={{
                           backgroundColor: element.color,
                         }}
+                        draggable={false}
                       ></div>
+                    )}
+                    {element.type === "image" && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={element.src}
+                        className="w-full h-full select-none object-contain"
+                        draggable={false}
+                        alt={element.src}
+                      />
                     )}
                   </DraggableContent>
                 </Item>

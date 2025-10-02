@@ -3,6 +3,7 @@ import { useElement, useInspector } from "@/context";
 import React from "react";
 import { Text, TextDialog } from "./text";
 import { Square } from "./square";
+import { ImageElement } from "./image";
 
 export function Sidebar() {
   const { removeElement } = useElement();
@@ -34,6 +35,7 @@ export function Sidebar() {
           <div className="grid grid-cols-2 gap-2">
             <Text />
             <Square />
+            <ImageElement />
           </div>
         </div>
         <div className="">

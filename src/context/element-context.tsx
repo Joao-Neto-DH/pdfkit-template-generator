@@ -25,7 +25,12 @@ type SquareElement = BaseElement & {
   color: string;
 };
 
-export type CanvasElement = TextElement | SquareElement;
+type ImageElement = BaseElement & {
+  type: "image";
+  src: string;
+};
+
+export type CanvasElement = TextElement | SquareElement | ImageElement;
 
 export interface ElementContextProps {
   elements: Array<CanvasElement>;
