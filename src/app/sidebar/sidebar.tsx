@@ -31,15 +31,19 @@ export function Sidebar() {
     >
       <div className="p-4 space-y-3">
         <div className="">
-          <p className="font-bold text-slate-600 uppercas">Elementos</p>
+          <p className="font-bold text-slate-600 text-sm uppercase">
+            Elementos
+          </p>
           <div className="flex flex-row flex-wrap gap-2">
             <Text />
             <Square />
             <ImageElement />
           </div>
         </div>
-        <div className="">
-          <p className="font-bold text-slate-600 uppercas">Propriedades</p>
+        <div className="text-sm">
+          <p className="font-bold text-slate-600 text-sm uppercase">
+            Propriedades
+          </p>
           {inspectedElement && (
             <div className="space-y-1">
               <div className="grid grid-cols-2 items-center text-slate-600 border-b last:border-b-0">
