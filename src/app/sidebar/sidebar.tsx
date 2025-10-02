@@ -2,6 +2,7 @@
 import { useElement, useInspector } from "@/context";
 import React from "react";
 import { Text, TextDialog } from "./text";
+import { Square } from "./square";
 
 export function Sidebar() {
   const { removeElement } = useElement();
@@ -30,8 +31,9 @@ export function Sidebar() {
       <div className="p-4 space-y-3">
         <div className="">
           <p className="font-bold text-slate-600 uppercas">Elementos</p>
-          <div className="space-y-1 space-x-1">
+          <div className="grid grid-cols-2 gap-2">
             <Text />
+            <Square />
           </div>
         </div>
         <div className="">

@@ -100,9 +100,9 @@ export default function Home() {
                     )}
                     {element.type === "square" && (
                       <div
-                        className="w-full h-full overflow-visible select-none"
+                        className="w-full h-full"
                         style={{
-                          color: element.color,
+                          backgroundColor: element.color,
                         }}
                       ></div>
                     )}

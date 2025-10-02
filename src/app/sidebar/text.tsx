@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import React from "react";
 import { Trigger } from "./trigger";
+import { generateId } from "@/util";
 
 export const BOLD = 1;
 export const ITALIC = 2;
@@ -29,9 +30,7 @@ export function Text() {
           width: 80,
           x: 0,
           y: 0,
-          id: Math.round(
-            Math.random() * 1000 + elements.length + 1 + Date.now()
-          ),
+          id: generateId(elements.length),
           type: "text",
           content,
           option: {
@@ -209,7 +208,7 @@ export function TextDialog(
   return (
     <Dialog
       dialogTrigger={
-        <Trigger className="w-full bg-blue-400 hover:bg-blue-500 transition-colors p-2 rounded cursor-pointer">
+        <Trigger className="w-full bg-blue-400 hover:bg-blue-500 transition-colors px-2 py-1 rounded cursor-pointer">
           {props.triggerText || "Paragrafo"}
         </Trigger>
       }
