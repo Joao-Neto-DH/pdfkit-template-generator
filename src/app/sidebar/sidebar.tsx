@@ -106,6 +106,37 @@ export function Sidebar() {
                   }}
                 />
               </div>
+              {inspectedElement.type === "square" && (
+                <div className="grid grid-cols-2 items-center text-slate-600 border-b last:border-b-0">
+                  <label htmlFor="width">Cor</label>
+                  <input
+                    type="color"
+                    defaultValue={inspectedElement.color}
+                    onChange={(evt) => {
+                      const color = evt.target.value;
+                      onInspectedElementChange({
+                        color,
+                        id: inspectedElement.id,
+                      });
+                    }}
+                  />
+                </div>
+              )}
+              {inspectedElement.type === "image" && (
+                <div className="grid grid-cols-2 items-center text-slate-600 border-b last:border-b-0">
+                  <label htmlFor="width">Imagem</label>
+                  <input
+                    type="file"
+                    onChange={(evt) => {
+                      const src = URL.createObjectURL(evt.target.files![0]);
+                      onInspectedElementChange({
+                        src,
+                        id: inspectedElement.id,
+                      });
+                    }}
+                  />
+                </div>
+              )}
               {inspectedElement.type === "text" && (
                 <div className="grid grid-cols-2 items-center text-slate-600 border-b last:border-b-0">
                   <div className="col-span-2 text-white pb-1">
