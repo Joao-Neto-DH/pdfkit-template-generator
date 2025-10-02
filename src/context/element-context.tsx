@@ -1,14 +1,31 @@
 "use client";
 import React from "react";
 
-export interface CanvasElement {
+type BaseElement = {
   id: number;
-  type: string;
   x: number;
   y: number;
   width: number;
   height: number;
-}
+};
+
+type TextElement = BaseElement & {
+  type: "text";
+  content: string;
+  option: {
+    fontSize: number;
+    align: "left" | "center" | "right" | "justify";
+    color: string;
+    style: number;
+  };
+};
+
+type SquareElement = BaseElement & {
+  type: "square";
+  color: string;
+};
+
+export type CanvasElement = TextElement | SquareElement;
 
 export interface ElementContextProps {
   elements: Array<CanvasElement>;

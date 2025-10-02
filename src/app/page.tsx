@@ -5,7 +5,7 @@ import { Ruler, RulerMousePosition } from "@/components/domain";
 import { useElement } from "@/context";
 import Item from "./item";
 import ResizableContent from "./resizable-content";
-import { Sidebar } from "./sidebar";
+import { BOLD, ITALIC, Sidebar, UNDERLINE } from "./sidebar";
 
 const ONE_CENTIMETER_IN_POINT = 28.346;
 
@@ -63,17 +63,49 @@ export default function Home() {
               </Ruler>
             </div>
           </div>
-          <div id="canvas" className="h-full w-full p-6 overflow-auto">
+          <div
+            id="canvas"
+            className="h-full w-full p-6 space-y-4 overflow-auto"
+          >
             <div
               id="paper"
-              className="w-[791.72px] h-[1119.71px] mx-auto relative overflow-hidden"
+              className="w-[791.72px] h-[1119.71px] mx-auto relative overflow-hidden isolate"
               onClick={() => setSelectedElement(null)}
             >
               {elements.map((element) => (
                 <Item element={element} key={element.id}>
                   <ResizableContent />
                   <DraggableContent>
-                    <div className="bg-red-600 w-full h-full"></div>
+                    {element.type === "text" && (
+                      <pre
+                        className="w-full h-full overflow-visible whitespace-break-spaces select-none"
+                        style={{
+                          fontSize: `${element.option.fontSize}px`,
+                          color: element.option.color,
+                          textAlign: element.option.align,
+                          textDecorationLine:
+                            element.option.style & UNDERLINE
+                              ? "underline"
+                              : undefined,
+                          fontWeight:
+                            element.option.style & BOLD ? "bold" : undefined,
+                          fontStyle:
+                            element.option.style & ITALIC
+                              ? "italic"
+                              : undefined,
+                        }}
+                      >
+                        {element.type === "text" && element.content}
+                      </pre>
+                    )}
+                    {element.type === "square" && (
+                      <div
+                        className="w-full h-full overflow-visible select-none"
+                        style={{
+                          color: element.color,
+                        }}
+                      ></div>
+                    )}
                   </DraggableContent>
                 </Item>
               ))}

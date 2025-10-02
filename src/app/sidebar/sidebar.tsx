@@ -1,9 +1,11 @@
 "use client";
 
 import { useElement, useInspector } from "@/context";
+import React from "react";
+import { Text } from "./text";
 
 export function Sidebar() {
-  const { addElement, elements, removeElement } = useElement();
+  const { removeElement } = useElement();
   const { inspectedElement, onInspectedElementChange, setInspectedElement } =
     useInspector();
 
@@ -12,24 +14,8 @@ export function Sidebar() {
       <div className="p-4 space-y-3">
         <div className="">
           <p className="font-bold text-slate-600 uppercas">Elementos</p>
-          <div className="">
-            <button
-              onClick={() => {
-                addElement({
-                  height: 80,
-                  width: 80,
-                  x: 0,
-                  y: 0,
-                  id: Math.round(
-                    Math.random() * 1000 + elements.length + 1 + Date.now()
-                  ),
-                  type: "square",
-                });
-              }}
-              className="bg-blue-400 hover:bg-blue-500 transition-colors p-2 rounded cursor-pointer"
-            >
-              Quadrado
-            </button>
+          <div className="space-y-1 space-x-1">
+            <Text />
           </div>
         </div>
         <div className="">
