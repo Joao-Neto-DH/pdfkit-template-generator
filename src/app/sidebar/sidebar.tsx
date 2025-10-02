@@ -8,6 +8,20 @@ export function Sidebar() {
   const { inspectedElement, onInspectedElementChange, setInspectedElement } =
     useInspector();
 
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Delete" && inspectedElement) {
+        removeElement(inspectedElement.id);
+        setInspectedElement(null);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [inspectedElement, removeElement, setInspectedElement]);
+
   return (
     <div
       className="w-96 h-full bg-white overflow-y-auto"
