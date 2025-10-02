@@ -4,6 +4,7 @@ import { Trigger } from "./trigger";
 import React from "react";
 import { useElement } from "@/context";
 import { generateId } from "@/util";
+import { SquareIcon } from "lucide-react";
 
 export function Square() {
   const { addElement, elements } = useElement();
@@ -13,8 +14,11 @@ export function Square() {
   return (
     <Dialog
       dialogTrigger={
-        <Trigger className="w-full bg-blue-400 hover:bg-blue-500 transition-colors px-2 py-1 rounded cursor-pointer">
-          Rectangulo
+        <Trigger
+          title={"Rectangulo"}
+          className="flex flex-row items-center gap-1 bg-blue-400 hover:bg-blue-500 transition-colors p-2 rounded cursor-pointer"
+        >
+          <SquareIcon size={16} />
         </Trigger>
       }
     >

@@ -32,7 +32,7 @@ export function Sidebar() {
       <div className="p-4 space-y-3">
         <div className="">
           <p className="font-bold text-slate-600 uppercas">Elementos</p>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="flex flex-row flex-wrap gap-2">
             <Text />
             <Square />
             <ImageElement />

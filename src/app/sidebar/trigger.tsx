@@ -7,15 +7,18 @@ export function Trigger({
   className,
   onClick,
   onBeforeClose,
+  title,
 }: {
   className?: string;
   children?: React.ReactNode;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   onBeforeClose?: () => false | void;
+  title?: string;
 }) {
   const { setOpen, open } = useDialog();
   return (
     <button
+      title={title}
       onClick={(evt) => {
         const result = onBeforeClose?.();
 

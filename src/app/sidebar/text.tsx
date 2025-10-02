@@ -10,6 +10,7 @@ import {
   Bold,
   Italic,
   Underline,
+  Type,
 } from "lucide-react";
 import React from "react";
 import { Trigger } from "./trigger";
@@ -208,8 +209,11 @@ export function TextDialog(
   return (
     <Dialog
       dialogTrigger={
-        <Trigger className="w-full bg-blue-400 hover:bg-blue-500 transition-colors px-2 py-1 rounded cursor-pointer">
-          {props.triggerText || "Paragrafo"}
+        <Trigger
+          title={props.triggerText || "Paragrafo"}
+          className="flex flex-row items-center gap-1 bg-blue-400 hover:bg-blue-500 transition-colors p-2 rounded cursor-pointer"
+        >
+          <Type size={16} />
         </Trigger>
       }
     >
