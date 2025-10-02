@@ -8,6 +8,7 @@ import ResizableContent from "./resizable-content";
 import { BOLD, ITALIC, Sidebar, UNDERLINE } from "./sidebar";
 import { MenuOption, MenuRoot } from "@/components/domain/menu";
 import { Save, Import } from "lucide-react";
+import { pixelToPoint } from "@/util";
 
 const ONE_CENTIMETER_IN_POINT = 28.346;
 
@@ -48,7 +49,22 @@ export default function Home() {
             const link = document.createElement("a");
             link.download = `${name || "untitled"}-${Date.now()}.json`;
 
-            const blob = new Blob([JSON.stringify(elements, null, 2)], {
+            const parsedElements = elements.map((element) => ({
+              ...element,
+              width: pixelToPoint(element.width),
+              height: pixelToPoint(element.height),
+              x: pixelToPoint(element.x),
+              y: pixelToPoint(element.y),
+              option:
+                element.type === "text"
+                  ? {
+                      ...element.option,
+                      fontSize: pixelToPoint(element.option.fontSize),
+                    }
+                  : undefined,
+            }));
+
+            const blob = new Blob([JSON.stringify(parsedElements, null, 2)], {
               type: "text/json",
             });
             link.href = URL.createObjectURL(blob);
