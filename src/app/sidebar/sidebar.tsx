@@ -4,9 +4,10 @@ import React from "react";
 import { Text, TextDialog } from "./text";
 import { Square } from "./square";
 import { ImageElement } from "./image";
+import { Layer } from "./layer";
 
 export function Sidebar() {
-  const { removeElement } = useElement();
+  const { removeElement, elements } = useElement();
   const { inspectedElement, onInspectedElementChange, setInspectedElement } =
     useInspector();
 
@@ -38,6 +39,16 @@ export function Sidebar() {
             <Text />
             <Square />
             <ImageElement />
+          </div>
+        </div>
+        <div className="">
+          <p className="font-bold text-slate-600 text-sm uppercase mb-2">
+            Camadas
+          </p>
+          <div className="space-y-2 bg-gray-100 p-2 rounded">
+            {elements.map((element, index) => (
+              <Layer element={element} key={element.id} index={index} />
+            ))}
           </div>
         </div>
         <div className="text-sm">

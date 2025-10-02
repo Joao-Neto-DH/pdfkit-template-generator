@@ -41,6 +41,7 @@ export interface ElementContextProps {
   setSelectedElement: React.Dispatch<
     React.SetStateAction<CanvasElement | null>
   >;
+  changeElementOrder: (fromIndex: number, toIndex: number) => void;
 }
 
 export const ElementContext = React.createContext<ElementContextProps>(null!);
@@ -69,6 +70,14 @@ export function ElementProvider(props: { children: React.ReactNode }) {
         updateElement,
         selectedElement,
         setSelectedElement,
+        changeElementOrder(fromIndex, toIndex) {
+          setElements((prev) => {
+            const toElement = prev[toIndex];
+            prev[toIndex] = prev[fromIndex];
+            prev[fromIndex] = toElement;
+            return [...prev];
+          });
+        },
       }}
     >
       {props.children}
