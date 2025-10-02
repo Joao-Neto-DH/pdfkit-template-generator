@@ -73,7 +73,7 @@ export default function Home() {
               onClick={() => setSelectedElement(null)}
             >
               {elements.map((element) => (
-                <Item element={element} key={element.id}>
+                <Item element={element} key={JSON.stringify(element)}>
                   <ResizableContent />
                   <DraggableContent>
                     {element.type === "text" && (

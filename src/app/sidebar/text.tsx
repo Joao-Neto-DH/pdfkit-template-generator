@@ -20,13 +20,57 @@ export const UNDERLINE = 4;
 
 export function Text() {
   const { addElement, elements } = useElement();
+
+  return (
+    <TextDialog
+      onDone={({ align, color, fontSize, style, content }) =>
+        addElement({
+          height: 80,
+          width: 80,
+          x: 0,
+          y: 0,
+          id: Math.round(
+            Math.random() * 1000 + elements.length + 1 + Date.now()
+          ),
+          type: "text",
+          content,
+          option: {
+            align,
+            color,
+            fontSize,
+            style,
+          },
+        })
+      }
+    ></TextDialog>
+  );
+}
+export function TextDialog(
+  props: Partial<{
+    fontSize: number;
+    align: "left" | "center" | "right" | "justify";
+    color: string;
+    style: number;
+    buttonText: string;
+    triggerText: string;
+    content: string;
+  }> & {
+    onDone: (props: {
+      fontSize: number;
+      align: "left" | "center" | "right" | "justify";
+      color: string;
+      style: number;
+      content: string;
+    }) => void;
+  }
+) {
   const formRef = React.useRef<HTMLFormElement>(null);
-  const [fontSize, setFontSize] = React.useState(16);
+  const [fontSize, setFontSize] = React.useState(props.fontSize || 16);
   const [align, setAlign] = React.useState<
     "left" | "center" | "right" | "justify"
-  >("left");
-  const [stylingValue, setStylingValue] = React.useState(0);
-  const [color, setColor] = React.useState("#000000");
+  >(props.align || "left");
+  const [stylingValue, setStylingValue] = React.useState(props.style || 0);
+  const [color, setColor] = React.useState(props.color || "#000000");
 
   const styling = (
     <div className="flex flex-row">
@@ -165,8 +209,8 @@ export function Text() {
   return (
     <Dialog
       dialogTrigger={
-        <Trigger className="bg-blue-400 hover:bg-blue-500 transition-colors p-2 rounded cursor-pointer">
-          Texto
+        <Trigger className="w-full bg-blue-400 hover:bg-blue-500 transition-colors p-2 rounded cursor-pointer">
+          {props.triggerText || "Paragrafo"}
         </Trigger>
       }
     >
@@ -201,6 +245,7 @@ export function Text() {
                     stylingValue & UNDERLINE ? "underline" : undefined,
                   fontWeight: stylingValue & BOLD ? "bold" : "normal",
                 }}
+                defaultValue={props.content}
               ></textarea>
             </div>
             <div className="flex flex-row items-center gap-2">
@@ -221,6 +266,7 @@ export function Text() {
                 name="color"
                 id="color"
                 onChange={(evt) => setColor(evt.target.value)}
+                defaultValue={color}
               />
             </div>
             <Trigger
@@ -228,32 +274,17 @@ export function Text() {
                 const formData = new FormData(formRef.current!);
                 const datas = Object.fromEntries(formData);
 
-                addElement({
-                  height: 80,
-                  width: 80,
-                  x: 0,
-                  y: 0,
-                  id: Math.round(
-                    Math.random() * 1000 + elements.length + 1 + Date.now()
-                  ),
-                  type: "text",
+                props.onDone({
+                  align,
+                  fontSize,
+                  style: stylingValue,
+                  color,
                   content: datas.texto.toString(),
-                  option: {
-                    align,
-                    color,
-                    fontSize,
-                    style: stylingValue,
-                  },
                 });
-
-                setAlign("left");
-                setFontSize(16);
-                setColor("#000000");
-                setStylingValue(0);
               }}
               className="bg-blue-400 hover:bg-blue-500 transition-colors p-2 rounded cursor-pointer w-full"
             >
-              Criar
+              {props.buttonText || "Criar"}
             </Trigger>
           </div>
         </form>

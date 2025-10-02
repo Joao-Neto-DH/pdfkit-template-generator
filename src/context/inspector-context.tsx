@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { CanvasElement } from "./element-context";
+import { CanvasElement, ElementContext } from "./element-context";
 import { debounce } from "lodash";
 
 interface InspectorContextProps {
@@ -16,15 +16,22 @@ export const InspectorContext = React.createContext<InspectorContextProps>(
 export function InspectorProvider({ children }: { children: React.ReactNode }) {
   const [inspectedElement, setInspectedElement] =
     React.useState<CanvasElement | null>(null);
+  const { updateElement } = React.use(ElementContext);
 
   const onInspectedElementChangeWithDebounce = debounce(
     (element: Partial<CanvasElement>) => {
+      // @ts-expect-error will always be the same type
       setInspectedElement((prev) => {
         if (prev) {
           return { ...prev, ...element, id: prev.id };
         }
         return prev;
       });
+
+      if (inspectedElement) {
+        // @ts-expect-error will always be the same type
+        updateElement({ ...inspectedElement, ...element });
+      }
     },
     500
   );
