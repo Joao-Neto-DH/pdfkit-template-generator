@@ -3,5 +3,5 @@ export function pixelToPoint(px: number) {
 }
 
 export function pointToPixel(pt: number) {
-  return (pt * 96) / 72;
+  return Math.round((pt * 96) / 72);
 }
