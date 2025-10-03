@@ -42,6 +42,7 @@ export interface ElementContextProps {
     React.SetStateAction<CanvasElement | null>
   >;
   changeElementOrder: (fromIndex: number, toIndex: number) => void;
+  setElements: (elements: Array<CanvasElement>) => void;
 }
 
 export const ElementContext = React.createContext<ElementContextProps>(null!);
@@ -78,6 +79,7 @@ export function ElementProvider(props: { children: React.ReactNode }) {
             return [...prev];
           });
         },
+        setElements,
       }}
     >
       {props.children}

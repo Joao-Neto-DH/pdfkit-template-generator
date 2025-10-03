@@ -2,13 +2,13 @@
 import React from "react";
 import DraggableContent from "./draggable-content";
 import { Ruler, RulerMousePosition } from "@/components/domain";
-import { useElement } from "@/context";
+import { CanvasElement, useElement } from "@/context";
 import Item from "./item";
 import ResizableContent from "./resizable-content";
 import { BOLD, ITALIC, Sidebar, UNDERLINE } from "./sidebar";
 import { MenuOption, MenuRoot } from "@/components/domain/menu";
 import { Save, Import } from "lucide-react";
-import { pixelToPoint } from "@/util";
+import { pixelToPoint, pointToPixel } from "@/util";
 
 const ONE_CENTIMETER_IN_POINT = 28.346;
 
@@ -17,7 +17,7 @@ export default function Home() {
     width: 0,
     height: 0,
   });
-  const { elements, setSelectedElement } = useElement();
+  const { elements, setSelectedElement, setElements } = useElement();
 
   React.useEffect(() => {
     const handleResize = () => {
@@ -74,7 +74,40 @@ export default function Home() {
           <Save size={16} />
           Exportar
         </MenuOption>
-        <MenuOption>
+        <MenuOption
+          onClick={() => {
+            const file = document.createElement("input");
+            file.type = "file";
+            file.accept = ".json";
+
+            file.onchange = async () => {
+              const textContent = await file.files?.item(0)?.text();
+              const jsonContent: CanvasElement[] = JSON.parse(textContent!);
+
+              const parsedElements = jsonContent.map<CanvasElement>(
+                (element) => ({
+                  ...element,
+                  width: pointToPixel(element.width),
+                  height: pointToPixel(element.height),
+                  x: pointToPixel(element.x),
+                  y: pointToPixel(element.y),
+                  // @ts-expect-error it alright
+                  option:
+                    element.type === "text"
+                      ? {
+                          ...element.option,
+                          fontSize: pointToPixel(element.option.fontSize),
+                        }
+                      : undefined,
+                })
+              );
+
+              setElements(parsedElements);
+            };
+
+            file.click();
+          }}
+        >
           <Import size={16} />
           Importar
         </MenuOption>
@@ -122,6 +155,7 @@ export default function Home() {
                         draggable={false}
                         className="w-full h-full overflow-visible whitespace-break-spaces select-none"
                         style={{
+                          fontFamily: "Helvetica",
                           fontSize: `${element.option.fontSize}px`,
                           color: element.option.color,
                           textAlign: element.option.align,
