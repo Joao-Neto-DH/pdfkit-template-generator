@@ -6,6 +6,32 @@ import { useElement } from "@/context";
 import { generateId } from "@/util";
 import { ImageIcon } from "lucide-react";
 
+export async function getImageData(file: File): Promise<string> {
+  if (!file.type.startsWith("image/")) {
+    throw new Error("File is not an image");
+  }
+
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const canvas = document.createElement("canvas");
+    const image = new Image();
+
+    image.src = url;
+
+    image.onload = () => {
+      canvas.width = image.width;
+      canvas.height = image.height;
+      canvas.getContext("2d")!.drawImage(image, 0, 0);
+      const dataUrl = canvas.toDataURL(file.type);
+      resolve(dataUrl);
+    };
+
+    image.onerror = () => {
+      reject(new Error("Failed to load image"));
+    };
+  });
+}
+
 export function ImageElement() {
   const { addElement, elements } = useElement();
   const [size, setSize] = React.useState({ width: 100, height: 100 });
@@ -63,9 +89,14 @@ export function ImageElement() {
             <input
               type="file"
               accept="image/*"
-              onChange={(e) =>
-                setImage(URL.createObjectURL(e.target.files![0]))
-              }
+              onChange={async (e) => {
+                const file = e.target.files![0];
+                const dataUrl = await getImageData(file);
+                setImage(dataUrl);
+
+                // canvas.getContext("2d")!.drawImage(blob, 0, 0, 100, 100);
+                // setImage(URL.createObjectURL(e.target.files![0]));
+              }}
             />
           </div>
           <Trigger

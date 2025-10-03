@@ -3,7 +3,7 @@ import { useElement, useInspector } from "@/context";
 import React from "react";
 import { Text, TextDialog } from "./text";
 import { Square } from "./square";
-import { ImageElement } from "./image";
+import { getImageData, ImageElement } from "./image";
 import { Layer } from "./layer";
 
 export function Sidebar() {
@@ -28,7 +28,7 @@ export function Sidebar() {
   return (
     <div
       className="w-96 h-full bg-white overflow-y-auto"
-      key={JSON.stringify(inspectedElement)}
+      // key={JSON.stringify(inspectedElement)}
     >
       <div className="p-4 space-y-3">
         <div className="">
@@ -142,8 +142,8 @@ export function Sidebar() {
                   <label htmlFor="width">Imagem</label>
                   <input
                     type="file"
-                    onChange={(evt) => {
-                      const src = URL.createObjectURL(evt.target.files![0]);
+                    onChange={async (evt) => {
+                      const src = await getImageData(evt.target.files![0]);
                       onInspectedElementChange({
                         src,
                         id: inspectedElement.id,
