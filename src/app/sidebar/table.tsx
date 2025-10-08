@@ -37,7 +37,7 @@ export function Table({
     <Dialog
       dialogTrigger={
         <Trigger
-          title={"Rectangulo"}
+          title={"Tabela"}
           className="flex flex-row items-center gap-1 bg-blue-400 hover:bg-blue-500 transition-colors p-2 rounded cursor-pointer"
         >
           <Table2 size={16} />
