@@ -1,5 +1,5 @@
 export const RICH_TEXT_REGEX =
-  /(?<!\$)\[([a-zA-Z0-9\W\_\s]+)\]{(([a-zA-Z-]+\:[a-zA-Z0-9#]+;)+)}/gm;
+  /(?<!\$)\[([a-zA-Z0-9\-\_\*\+\\\s]+)\]{(([a-zA-Z-]+\:[a-zA-Z0-9#]+;)+)}/gm;
 
 export function richTextToHtml(
   text: string,
