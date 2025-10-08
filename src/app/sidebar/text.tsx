@@ -172,7 +172,7 @@ export function TextDialog(
     field: keyof typeof format,
     value: string | number
   ) => {
-    if (selectedText.length !== 0) {
+    if (selectedText.length !== 0 && field !== "align") {
       const fieldCamelCase = splitCamelCase(field);
       let styles = "";
       let textContent = selectedText;
@@ -412,6 +412,7 @@ export function TextDialog(
 
                   if (match) {
                     setSelectedText(match.text);
+                    setCursorPosition(match.positionStart);
                     match.styles.split(";").forEach((style, index, array) => {
                       if (index === array.length - 1) {
                         return;
@@ -439,23 +440,17 @@ export function TextDialog(
                     setSelectedText(sub);
                     // @ts-expect-error it will belong
                     setFormat(DEFAULT_FORMAT);
+                    setCursorPosition(cursorPosition);
                   } else {
                     // @ts-expect-error it will belong
                     setFormat(DEFAULT_FORMAT);
                     setSelectedText("");
+                    setCursorPosition(cursorPosition);
                   }
-                  setCursorPosition(cursorPosition);
                 }}
-                // style={{
-                //   fontSize,
-                //   textAlign: align,
-                //   color,
-                //   fontStyle: stylingValue & ITALIC ? "italic" : "normal",
-                //   //   textDecoration:
-                //   textDecorationLine:
-                //     stylingValue & UNDERLINE ? "underline" : undefined,
-                //   fontWeight: stylingValue & BOLD ? "bold" : "normal",
-                // }}
+                style={{
+                  textAlign: format.align,
+                }}
                 value={content}
                 onChange={(evt) => {
                   const text = evt.target.value;
@@ -485,6 +480,7 @@ export function TextDialog(
             </div>
             <pre
               className="whitespace-break-spaces"
+              style={{ textAlign: format.align }}
               dangerouslySetInnerHTML={{ __html: htmlContent }}
             />
             <div className="flex flex-row items-center gap-2">
