@@ -27,10 +27,7 @@ export function Sidebar() {
   }, [inspectedElement, removeElement, setInspectedElement]);
 
   return (
-    <div
-      className="w-96 h-full bg-white overflow-y-auto"
-      // key={JSON.stringify(inspectedElement)}
-    >
+    <div className="w-96 h-full bg-white overflow-y-auto">
       <div className="p-4 space-y-3">
         <div className="">
           <p className="font-bold text-slate-600 text-sm uppercase">
@@ -58,7 +55,7 @@ export function Sidebar() {
             Propriedades
           </p>
           {inspectedElement && (
-            <div className="space-y-1">
+            <div className="space-y-1" key={JSON.stringify(inspectedElement)}>
               <div className="grid grid-cols-2 items-center text-slate-600 border-b last:border-b-0">
                 <label htmlFor="id">ID</label>
                 <input type="text" value={inspectedElement.id} disabled />

@@ -14,11 +14,70 @@ import {
 } from "lucide-react";
 import React from "react";
 import { Trigger } from "./trigger";
-import { generateId } from "@/util";
+import { generateId, RICH_TEXT_REGEX, richTextToHtml } from "@/util";
+
+export type Match = {
+  positionStart: number;
+  length: number;
+  styles: string;
+  text: string;
+};
 
 export const BOLD = 1;
 export const ITALIC = 2;
 export const UNDERLINE = 4;
+
+function joinCamelCase(arr: Array<string>) {
+  const [first, ...rest] = arr;
+
+  if (arr.length === 1) {
+    return first;
+  } else {
+    const newArr = [
+      first,
+      ...rest.map((item) => item.charAt(0).toUpperCase() + item.slice(1)),
+    ];
+
+    return newArr.join("");
+  }
+}
+
+function splitCamelCase(str: string) {
+  return str
+    .replace(/([A-Z])/g, " $1")
+    .trim()
+    .split(" ")
+    .map((item) => item.toLowerCase())
+    .join("-");
+}
+
+function insertSelectedText(
+  textContent: string,
+  previousTextLength: number,
+  selectedText: string,
+  cursorPosition: number
+) {
+  // console.log("BEFORE", textContent.slice(0, cursorPosition));
+  // console.log("INSERT", selectedText);
+  // console.log("AFTER", textContent.slice(cursorPosition + previousTextLength));
+
+  return (
+    textContent.slice(0, cursorPosition) +
+    selectedText +
+    textContent.slice(cursorPosition + previousTextLength)
+  );
+}
+
+const DEFAULT_FORMAT = {
+  align: "left",
+  color: "#000000",
+  fontSize: 16,
+  style: 0,
+  fontWeight: "normal",
+  fontStyle: "normal",
+  textDecorationLine: "none",
+  textAlign: "left",
+};
 
 export function Text() {
   const { addElement, elements } = useElement();
@@ -65,12 +124,94 @@ export function TextDialog(
   }
 ) {
   const formRef = React.useRef<HTMLFormElement>(null);
-  const [fontSize, setFontSize] = React.useState(props.fontSize || 16);
-  const [align, setAlign] = React.useState<
-    "left" | "center" | "right" | "justify"
-  >(props.align || "left");
-  const [stylingValue, setStylingValue] = React.useState(props.style || 0);
-  const [color, setColor] = React.useState(props.color || "#000000");
+  // const [fontSize, setFontSize] = React.useState(props.fontSize || 16);
+  // const [align, setAlign] = React.useState<
+  //   "left" | "center" | "right" | "justify"
+  // >(props.align || "left");
+  // const [stylingValue, setStylingValue] = React.useState(props.style || 0);
+  // const [color, setColor] = React.useState(props.color || "#000000");
+  const [htmlContent, setHtmlContent] = React.useState(
+    richTextToHtml(props.content || "")
+  );
+  const [content, setContent] = React.useState(props.content || "");
+  const [format, setFormat] = React.useState({
+    align: props.align || "left",
+    color: props.color || "#000000",
+    fontSize: props.fontSize || 16,
+    style: props.style || 0,
+    fontWeight: "normal",
+    fontStyle: "normal",
+    textDecorationLine: "none",
+    textAlign: "left",
+  });
+  const [matches, setMatches] = React.useState<Array<Match>>(() => {
+    const matches: Array<Match> = [];
+
+    richTextToHtml(props.content || "", (match, style, position) => {
+      matches.push({
+        length: match.length,
+        styles: style,
+        positionStart: position,
+        text: match,
+      });
+    });
+
+    return matches;
+  });
+  const [selectedText, setSelectedText] = React.useState("");
+  const [cursorPosition, setCursorPosition] = React.useState(0);
+
+  const onFormatChange = (
+    field: keyof typeof format,
+    value: string | number
+  ) => {
+    setFormat((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const formatSelectedText = (
+    field: keyof typeof format,
+    value: string | number
+  ) => {
+    if (selectedText.length !== 0) {
+      const fieldCamelCase = splitCamelCase(field);
+      let styles = "";
+      let textContent = selectedText;
+      const isFormatted = RICH_TEXT_REGEX.test(selectedText);
+
+      if (isFormatted) {
+        selectedText.replace(RICH_TEXT_REGEX, (_match, text, style) => {
+          styles = style;
+          textContent = text;
+          return "";
+        });
+      }
+
+      const filteredStyles = styles
+        .slice(0, -1)
+        .split(";")
+        .filter((style) => !style.startsWith(fieldCamelCase))
+        .filter((style) => style.length > 0);
+
+      styles =
+        filteredStyles.join(";") +
+        `${filteredStyles.length > 0 ? ";" : ""}${fieldCamelCase}:${value}${
+          field === "fontSize" ? "px" : ""
+        };`;
+      const formattedText = `[${textContent}]{${styles}}`;
+
+      const newContent = insertSelectedText(
+        content,
+        selectedText.length,
+        formattedText,
+        cursorPosition
+      );
+
+      setContent(newContent);
+      setHtmlContent(richTextToHtml(newContent));
+      setSelectedText(formattedText);
+    }
+    onFormatChange(field, value);
+  };
 
   const styling = (
     <div className="flex flex-row">
@@ -80,8 +221,13 @@ export function TextDialog(
           name="bold"
           id="bold"
           className="hidden peer"
-          onChange={() => setStylingValue(stylingValue ^ BOLD)}
-          checked={(stylingValue & BOLD) !== 0}
+          onChange={() =>
+            formatSelectedText(
+              "fontWeight",
+              format.fontWeight === "bold" ? "normal" : "bold"
+            )
+          }
+          checked={format.fontWeight === "bold"}
         />
         <label
           htmlFor="bold"
@@ -96,8 +242,13 @@ export function TextDialog(
           name="italic"
           id="italic"
           className="hidden peer"
-          onChange={() => setStylingValue(stylingValue ^ ITALIC)}
-          checked={(stylingValue & ITALIC) !== 0}
+          onChange={() =>
+            formatSelectedText(
+              "fontStyle",
+              format.fontStyle === "italic" ? "normal" : "italic"
+            )
+          }
+          checked={format.fontStyle === "italic"}
         />
         <label
           htmlFor="italic"
@@ -112,8 +263,13 @@ export function TextDialog(
           name="underline"
           id="underline"
           className="hidden peer"
-          onChange={() => setStylingValue(stylingValue ^ UNDERLINE)}
-          checked={(stylingValue & UNDERLINE) !== 0}
+          onChange={() =>
+            formatSelectedText(
+              "textDecorationLine",
+              format.textDecorationLine === "underline" ? "none" : "underline"
+            )
+          }
+          checked={format.textDecorationLine === "underline"}
         />
         <label
           htmlFor="underline"
@@ -132,8 +288,8 @@ export function TextDialog(
           name="align"
           id="align-left"
           className="hidden peer"
-          onChange={() => setAlign("left")}
-          checked={align === "left"}
+          onChange={() => formatSelectedText("textAlign", "left")}
+          checked={format.textAlign === "left"}
         />
         <label
           htmlFor="align-left"
@@ -148,8 +304,8 @@ export function TextDialog(
           name="align"
           id="align-center"
           className="hidden peer"
-          onChange={() => setAlign("center")}
-          checked={align === "center"}
+          onChange={() => formatSelectedText("textAlign", "center")}
+          checked={format.textAlign === "center"}
         />
         <label
           htmlFor="align-center"
@@ -164,8 +320,8 @@ export function TextDialog(
           name="align"
           id="align-right"
           className="hidden peer"
-          onChange={() => setAlign("right")}
-          checked={align === "right"}
+          onChange={() => formatSelectedText("textAlign", "right")}
+          checked={format.textAlign === "right"}
         />
         <label
           htmlFor="align-right"
@@ -180,8 +336,8 @@ export function TextDialog(
           name="align"
           id="align-justify"
           className="hidden peer"
-          onChange={() => setAlign("justify")}
-          checked={align === "justify"}
+          onChange={() => formatSelectedText("textAlign", "justify")}
+          checked={format.textAlign === "justify"}
         />
         <label
           htmlFor="align-justify"
@@ -199,9 +355,11 @@ export function TextDialog(
         type="number"
         name="fontSize"
         id="fontSize"
-        value={fontSize}
+        value={format.fontSize}
         className="w-20 border border-gray-400 rounded block"
-        onChange={(evt) => setFontSize(Number(evt.target.value))}
+        onChange={(evt) =>
+          formatSelectedText("fontSize", Number(evt.target.value))
+        }
       />
     </div>
   );
@@ -237,20 +395,98 @@ export function TextDialog(
                 name="texto"
                 id="texto"
                 cols={6}
-                className="w-80 h-30 border rounded block"
-                style={{
-                  fontSize,
-                  textAlign: align,
-                  color,
-                  fontStyle: stylingValue & ITALIC ? "italic" : "normal",
-                  //   textDecoration:
-                  textDecorationLine:
-                    stylingValue & UNDERLINE ? "underline" : undefined,
-                  fontWeight: stylingValue & BOLD ? "bold" : "normal",
+                className="w-full h-30 border rounded block"
+                onSelectCapture={(evt) => {
+                  const cursorPosition = evt.currentTarget.selectionStart;
+                  const cursorEnd = evt.currentTarget.selectionEnd;
+
+                  const match = matches.find((match) => {
+                    if (
+                      cursorPosition >= match.positionStart &&
+                      cursorPosition <= match.positionStart + match.length
+                    ) {
+                      return true;
+                    }
+                    return false;
+                  });
+
+                  if (match) {
+                    setSelectedText(match.text);
+                    match.styles.split(";").forEach((style, index, array) => {
+                      if (index === array.length - 1) {
+                        return;
+                      }
+
+                      const [key, value] = style.split(":");
+
+                      // @ts-expect-error it will belong
+                      const camelCaseKey: keyof typeof format = joinCamelCase(
+                        key.split("-")
+                      );
+
+                      if (key === "font-size") {
+                        onFormatChange(
+                          "fontSize",
+                          Number(value.replace("px", ""))
+                        );
+                        return;
+                      }
+
+                      onFormatChange(camelCaseKey, value);
+                    });
+                  } else if (cursorPosition !== cursorEnd) {
+                    const sub = content.slice(cursorPosition, cursorEnd);
+                    setSelectedText(sub);
+                    // @ts-expect-error it will belong
+                    setFormat(DEFAULT_FORMAT);
+                  } else {
+                    // @ts-expect-error it will belong
+                    setFormat(DEFAULT_FORMAT);
+                    setSelectedText("");
+                  }
+                  setCursorPosition(cursorPosition);
                 }}
-                defaultValue={props.content}
+                // style={{
+                //   fontSize,
+                //   textAlign: align,
+                //   color,
+                //   fontStyle: stylingValue & ITALIC ? "italic" : "normal",
+                //   //   textDecoration:
+                //   textDecorationLine:
+                //     stylingValue & UNDERLINE ? "underline" : undefined,
+                //   fontWeight: stylingValue & BOLD ? "bold" : "normal",
+                // }}
+                value={content}
+                onChange={(evt) => {
+                  const text = evt.target.value;
+                  const matches: Array<Match> = [];
+                  const html = richTextToHtml(
+                    text,
+                    (match, style, position) => {
+                      matches.push({
+                        length: match.length,
+                        styles: style,
+                        positionStart: position,
+                        text: match,
+                      });
+                    }
+                  );
+                  setMatches(matches);
+                  setHtmlContent(html);
+                  setContent(text);
+                }}
               ></textarea>
+              <input
+                type="text"
+                className="w-full border-b"
+                value={selectedText}
+                readOnly
+              />
             </div>
+            <pre
+              className="whitespace-break-spaces"
+              dangerouslySetInnerHTML={{ __html: htmlContent }}
+            />
             <div className="flex flex-row items-center gap-2">
               {textSize}
               <div>
@@ -268,19 +504,22 @@ export function TextDialog(
                 type="color"
                 name="color"
                 id="color"
-                onChange={(evt) => setColor(evt.target.value)}
-                defaultValue={color}
+                onChange={(evt) =>
+                  formatSelectedText("color", evt.target.value)
+                }
+                value={format.color}
               />
             </div>
             <Trigger
               onBeforeClose={() => {
                 const formData = new FormData(formRef.current!);
                 const datas = Object.fromEntries(formData);
+                const { align, color, fontSize, style } = format;
 
                 props.onDone({
                   align,
                   fontSize,
-                  style: stylingValue,
+                  style,
                   color,
                   content: datas.texto.toString(),
                 });

@@ -5,10 +5,10 @@ import { Ruler, RulerMousePosition } from "@/components/domain";
 import { CanvasElement, useElement } from "@/context";
 import Item from "./item";
 import ResizableContent from "./resizable-content";
-import { BOLD, ITALIC, Sidebar, UNDERLINE } from "./sidebar";
+import { Sidebar } from "./sidebar";
 import { MenuOption, MenuRoot } from "@/components/domain/menu";
 import { Save, Import } from "lucide-react";
-import { pixelToPoint, pointToPixel } from "@/util";
+import { pixelToPoint, pointToPixel, richTextToHtml } from "@/util";
 
 const ONE_CENTIMETER_IN_POINT = 28.346;
 
@@ -153,26 +153,27 @@ export default function Home() {
                     {element.type === "text" && (
                       <pre
                         draggable={false}
-                        className="w-full h-full overflow-visible whitespace-break-spaces select-none"
-                        style={{
-                          fontFamily: "Helvetica",
-                          fontSize: `${element.option.fontSize}px`,
-                          color: element.option.color,
-                          textAlign: element.option.align,
-                          textDecorationLine:
-                            element.option.style & UNDERLINE
-                              ? "underline"
-                              : undefined,
-                          fontWeight:
-                            element.option.style & BOLD ? "bold" : undefined,
-                          fontStyle:
-                            element.option.style & ITALIC
-                              ? "italic"
-                              : undefined,
+                        className="w-full h-full overflow-visible whitespace-break-spaces select-none text-black"
+                        // style={{
+                        //   fontFamily: "Helvetica",
+                        //   fontSize: `${element.option.fontSize}px`,
+                        //   color: element.option.color,
+                        //   textAlign: element.option.align,
+                        //   textDecorationLine:
+                        //     element.option.style & UNDERLINE
+                        //       ? "underline"
+                        //       : undefined,
+                        //   fontWeight:
+                        //     element.option.style & BOLD ? "bold" : undefined,
+                        //   fontStyle:
+                        //     element.option.style & ITALIC
+                        //       ? "italic"
+                        //       : undefined,
+                        // }}
+                        dangerouslySetInnerHTML={{
+                          __html: richTextToHtml(element.content),
                         }}
-                      >
-                        {element.type === "text" && element.content}
-                      </pre>
+                      />
                     )}
                     {element.type === "square" && (
                       <div
