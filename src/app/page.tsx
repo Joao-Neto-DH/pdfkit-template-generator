@@ -192,6 +192,33 @@ export default function Home() {
                         alt={element.src}
                       />
                     )}
+                    {element.type === "table" && (
+                      <div
+                        className="w-full h-full select-none"
+                        draggable={false}
+                      >
+                        <table className="w-full text-black [&_td,&_th]:p-2 [&_td,&_th]:text-sm [&_td,&_th]:border [&_th]:text-left">
+                          <thead>
+                            <tr>
+                              {[...Array(element.cols)].map((_, index) => (
+                                <th key={index}>Coluna {index + 1}</th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {[...Array(element.rows)].map((_, rowIndex) => (
+                              <tr key={rowIndex}>
+                                {[...Array(element.cols)].map((_, colIndex) => (
+                                  <td key={colIndex}>
+                                    Data {rowIndex + 1}-{colIndex + 1}
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
                   </DraggableContent>
                 </Item>
               ))}

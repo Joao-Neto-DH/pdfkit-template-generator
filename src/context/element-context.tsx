@@ -20,6 +20,12 @@ type TextElement = BaseElement & {
   };
 };
 
+type TableElement = BaseElement & {
+  type: "table";
+  cols: number;
+  rows: number;
+};
+
 type SquareElement = BaseElement & {
   type: "square";
   color: string;
@@ -30,7 +36,11 @@ type ImageElement = BaseElement & {
   src: string;
 };
 
-export type CanvasElement = TextElement | SquareElement | ImageElement;
+export type CanvasElement =
+  | TextElement
+  | SquareElement
+  | ImageElement
+  | TableElement;
 
 export interface ElementContextProps {
   elements: Array<CanvasElement>;

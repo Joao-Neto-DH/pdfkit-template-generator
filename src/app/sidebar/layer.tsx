@@ -2,7 +2,7 @@
 
 import { CanvasElement, useElement, useInspector } from "@/context";
 import { cn } from "@/util";
-import { ImageIcon, SquareIcon, Type } from "lucide-react";
+import { ImageIcon, SquareIcon, Type, Table2 } from "lucide-react";
 import React from "react";
 
 export function Layer({
@@ -58,6 +58,9 @@ export function Layer({
       )}
       {element.type === "image" && (
         <ImageIcon size={16} className="stroke-amber-600" />
+      )}
+      {element.type === "table" && (
+        <Table2 size={16} className="stroke-amber-600" />
       )}
       <span className="text-slate-600 text-sm">
         {element.type}-{element.id}

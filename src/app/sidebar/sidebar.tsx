@@ -5,6 +5,7 @@ import { Text, TextDialog } from "./text";
 import { Square } from "./square";
 import { getImageData, ImageElement } from "./image";
 import { Layer } from "./layer";
+import { Table } from "./table";
 
 export function Sidebar() {
   const { removeElement, elements } = useElement();
@@ -39,6 +40,7 @@ export function Sidebar() {
             <Text />
             <Square />
             <ImageElement />
+            <Table />
           </div>
         </div>
         <div className="">
@@ -175,6 +177,21 @@ export function Sidebar() {
                       }}
                       buttonText="Salvar"
                       triggerText="Editar texto"
+                    />
+                  </div>
+                </div>
+              )}
+              {inspectedElement.type === "table" && (
+                <div className="grid grid-cols-2 items-center text-slate-600 border-b last:border-b-0">
+                  <div className="col-span-2 text-white pb-1">
+                    <Table
+                      key={JSON.stringify(inspectedElement)}
+                      cols={inspectedElement.cols}
+                      rows={inspectedElement.rows}
+                      element={inspectedElement}
+                      onDone={(element) => {
+                        onInspectedElementChange(element);
+                      }}
                     />
                   </div>
                 </div>
