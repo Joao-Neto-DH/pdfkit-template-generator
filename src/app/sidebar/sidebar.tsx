@@ -212,6 +212,7 @@ export function Sidebar() {
                       cols={inspectedElement.cols}
                       rows={inspectedElement.rows}
                       element={inspectedElement}
+                      headers={inspectedElement.headers}
                       onDone={(element) => {
                         onInspectedElementChange(element);
                       }}

@@ -203,7 +203,7 @@ export default function Home() {
                           <thead>
                             <tr>
                               {[...Array(element.cols)].map((_, index) => (
-                                <th key={index}>Coluna {index + 1}</th>
+                                <th key={index}>{element.headers[index]}</th>
                               ))}
                             </tr>
                           </thead>

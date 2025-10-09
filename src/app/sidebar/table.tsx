@@ -9,11 +9,13 @@ import { Table2 } from "lucide-react";
 export function Table({
   cols = 2,
   rows = 2,
+  headers = ["Coluna 1", "Coluna 2"],
   element,
   onDone,
 }: {
   cols?: number;
   rows?: number;
+  headers?: string[];
   element?: CanvasElement;
   onDone?: (element: CanvasElement) => void;
 }) {
@@ -21,11 +23,12 @@ export function Table({
   const [tableDefinition, setTableDefinition] = React.useState({
     cols,
     rows,
+    headers,
   });
 
   const changeTableDefinition = (
     field: keyof typeof tableDefinition,
-    value: number
+    value: number | Array<string>
   ) => {
     setTableDefinition((prevTableDefinition) => ({
       ...prevTableDefinition,
@@ -52,7 +55,9 @@ export function Table({
               <thead>
                 <tr>
                   {[...Array(tableDefinition.cols)].map((_, index) => (
-                    <th key={index}>Coluna {index + 1}</th>
+                    <th key={index}>
+                      {tableDefinition.headers[index] ?? `Coluna ${index + 1}`}
+                    </th>
                   ))}
                 </tr>
               </thead>
@@ -69,20 +74,32 @@ export function Table({
               </tbody>
             </table>
           </div>
-          <div className="grid grid-cols-2">
-            <div className="flex">
+          <div className="grid grid-cols-2 gap-1">
+            <div className="flex flex-col">
               <label className="mr-2">Colunas</label>
               <input
                 type="number"
                 className="border rounded"
                 value={tableDefinition.cols}
                 min={1}
-                onChange={(e) =>
-                  changeTableDefinition("cols", Number(e.target.value))
-                }
+                onChange={(e) => {
+                  const newCols = Number(e.target.value);
+                  changeTableDefinition("cols", newCols);
+                  if (newCols < tableDefinition.cols) {
+                    changeTableDefinition(
+                      "headers",
+                      tableDefinition.headers.slice(0, newCols)
+                    );
+                  } else {
+                    changeTableDefinition("headers", [
+                      ...tableDefinition.headers,
+                      "Coluna " + newCols,
+                    ]);
+                  }
+                }}
               />
             </div>
-            <div className="flex">
+            <div className="flex flex-col">
               <label className="mr-2">Linhas</label>
               <input
                 type="number"
@@ -94,6 +111,27 @@ export function Table({
                 }
               />
             </div>
+          </div>
+          <div className="grid grid-cols-4 gap-1">
+            {[...Array(tableDefinition.cols)].map((_, index) => (
+              <div className="flex flex-col" key={index}>
+                <label className="mr-2 whitespace-nowrap">
+                  Colunas {index + 1}
+                </label>
+                <input
+                  type="text"
+                  className="border rounded"
+                  value={tableDefinition.headers[index]}
+                  onChange={(e) =>
+                    changeTableDefinition("headers", [
+                      ...tableDefinition.headers.map((h, i) =>
+                        i === index ? e.target.value : h
+                      ),
+                    ])
+                  }
+                />
+              </div>
+            ))}
           </div>
           <Trigger
             onBeforeClose={() => {

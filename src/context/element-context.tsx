@@ -26,6 +26,7 @@ type TableElement = BaseElement & {
   type: "table";
   cols: number;
   rows: number;
+  headers: string[];
 };
 
 type SquareElement = BaseElement & {
