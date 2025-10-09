@@ -7,6 +7,8 @@ type BaseElement = {
   y: number;
   width: number;
   height: number;
+  use_height?: boolean;
+  use_y?: boolean;
 };
 
 type TextElement = BaseElement & {
@@ -63,7 +65,10 @@ export function ElementProvider(props: { children: React.ReactNode }) {
     React.useState<CanvasElement | null>(null);
 
   function addElement(element: CanvasElement) {
-    setElements((prev) => [...prev, element]);
+    setElements((prev) => [
+      ...prev,
+      { ...element, use_height: true, use_y: true },
+    ]);
   }
   function removeElement(id: number) {
     setElements((prev) => prev.filter((element) => element.id !== id));

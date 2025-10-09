@@ -154,6 +154,7 @@ export default function Home() {
                       <pre
                         draggable={false}
                         className="w-full h-full overflow-visible whitespace-break-spaces select-none text-black"
+                        onClick={(e) => e.preventDefault()}
                         style={{
                           fontFamily: "Helvetica",
                           // fontSize: `${element.option.fontSize}px`,

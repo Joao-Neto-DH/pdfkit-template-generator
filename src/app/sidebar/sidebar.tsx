@@ -120,6 +120,32 @@ export function Sidebar() {
                   }}
                 />
               </div>
+              <div className="grid grid-cols-2 items-center text-slate-600 border-b last:border-b-0">
+                <label htmlFor="width">Usar altura</label>
+                <input
+                  type="checkbox"
+                  defaultChecked={inspectedElement.use_height}
+                  onChange={() => {
+                    onInspectedElementChange({
+                      use_height: !inspectedElement.use_height,
+                      id: inspectedElement.id,
+                    });
+                  }}
+                />
+              </div>
+              <div className="grid grid-cols-2 items-center text-slate-600 border-b last:border-b-0">
+                <label htmlFor="width">Usar Y</label>
+                <input
+                  type="checkbox"
+                  defaultChecked={inspectedElement.use_y}
+                  onChange={() => {
+                    onInspectedElementChange({
+                      use_y: !inspectedElement.use_y,
+                      id: inspectedElement.id,
+                    });
+                  }}
+                />
+              </div>
               {inspectedElement.type === "square" && (
                 <div className="grid grid-cols-2 items-center text-slate-600 border-b last:border-b-0">
                   <label htmlFor="width">Cor</label>
