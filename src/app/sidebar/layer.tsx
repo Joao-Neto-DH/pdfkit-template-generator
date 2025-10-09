@@ -50,21 +50,24 @@ export function Layer({
       }}
       onClick={() => setInspectedElement(element)}
     >
-      {element.type === "text" && (
-        <Type size={16} className="stroke-amber-600" />
-      )}
-      {element.type === "square" && (
-        <SquareIcon size={16} className="stroke-amber-600" />
-      )}
-      {element.type === "image" && (
-        <ImageIcon size={16} className="stroke-amber-600" />
-      )}
-      {element.type === "table" && (
-        <Table2 size={16} className="stroke-amber-600" />
-      )}
-      <span className="text-slate-600 text-sm">
-        {element.type}-{element.id}
+      <span className="min-w-4">
+        {element.type === "text" && (
+          <Type size={16} className="stroke-amber-600" />
+        )}
+        {element.type === "square" && (
+          <SquareIcon size={16} className="stroke-amber-600" />
+        )}
+        {element.type === "image" && (
+          <ImageIcon size={16} className="stroke-amber-600" />
+        )}
+        {element.type === "table" && (
+          <Table2 size={16} className="stroke-amber-600" />
+        )}
       </span>
+      <p className="text-slate-600 text-sm line-clamp-1 text-ellipsis">
+        {element.type === "text" && element.content}
+        {element.type !== "text" && `${element.type}-${element.id}`}
+      </p>
     </div>
   );
 }
