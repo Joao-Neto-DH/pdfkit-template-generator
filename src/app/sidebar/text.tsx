@@ -142,7 +142,7 @@ export function TextDialog(
     fontWeight: "normal",
     fontStyle: "normal",
     textDecorationLine: "none",
-    textAlign: "left",
+    textAlign: props.align || "left",
   });
   const [matches, setMatches] = React.useState<Array<Match>>(() => {
     const matches: Array<Match> = [];
@@ -449,7 +449,7 @@ export function TextDialog(
                   }
                 }}
                 style={{
-                  textAlign: format.align,
+                  textAlign: format.textAlign as typeof format.align,
                 }}
                 value={content}
                 onChange={(evt) => {
@@ -480,7 +480,7 @@ export function TextDialog(
             </div>
             <pre
               className="whitespace-break-spaces"
-              style={{ textAlign: format.align }}
+              style={{ textAlign: format.textAlign as typeof format.align }}
               dangerouslySetInnerHTML={{ __html: htmlContent }}
             />
             <div className="flex flex-row items-center gap-2">
@@ -510,10 +510,10 @@ export function TextDialog(
               onBeforeClose={() => {
                 const formData = new FormData(formRef.current!);
                 const datas = Object.fromEntries(formData);
-                const { align, color, fontSize, style } = format;
+                const { color, fontSize, style } = format;
 
                 props.onDone({
-                  align,
+                  align: format.textAlign as typeof format.align,
                   fontSize,
                   style,
                   color,

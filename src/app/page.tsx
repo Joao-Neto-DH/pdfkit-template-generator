@@ -154,22 +154,22 @@ export default function Home() {
                       <pre
                         draggable={false}
                         className="w-full h-full overflow-visible whitespace-break-spaces select-none text-black"
-                        // style={{
-                        //   fontFamily: "Helvetica",
-                        //   fontSize: `${element.option.fontSize}px`,
-                        //   color: element.option.color,
-                        //   textAlign: element.option.align,
-                        //   textDecorationLine:
-                        //     element.option.style & UNDERLINE
-                        //       ? "underline"
-                        //       : undefined,
-                        //   fontWeight:
-                        //     element.option.style & BOLD ? "bold" : undefined,
-                        //   fontStyle:
-                        //     element.option.style & ITALIC
-                        //       ? "italic"
-                        //       : undefined,
-                        // }}
+                        style={{
+                          fontFamily: "Helvetica",
+                          // fontSize: `${element.option.fontSize}px`,
+                          // color: element.option.color,
+                          textAlign: element.option.align,
+                          // textDecorationLine:
+                          //   element.option.style & UNDERLINE
+                          //     ? "underline"
+                          //     : undefined,
+                          // fontWeight:
+                          //   element.option.style & BOLD ? "bold" : undefined,
+                          // fontStyle:
+                          //   element.option.style & ITALIC
+                          //     ? "italic"
+                          //     : undefined,
+                        }}
                         dangerouslySetInnerHTML={{
                           __html: richTextToHtml(element.content),
                         }}
